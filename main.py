@@ -3,7 +3,67 @@ Autor: Gabriel Alberto Paz González 221087
 Descripción: Implementación interactiva de MTF e IMTF
              
 """
+import re, datetime, pathlib, sys
+from typing import List, Tuple
+from colorama import init, Fore, Style
+init(autoreset=True)
 
+GREEN = Fore.GREEN + Style.BRIGHT
+CYAN  = Fore.CYAN  + Style.BRIGHT
+YELL  = Fore.YELLOW+ Style.BRIGHT
+MAG   = Fore.MAGENTA + Style.BRIGHT
+RESET = Style.RESET_ALL
+
+# ──────────── UTILIDADES ──────────── #
+def marco(titulo: str, ancho: int = 70):
+    borde = "=" * ancho
+    print(f"\n{MAG}{borde}")
+    print(titulo.center(ancho))
+    print(f"{borde}{RESET}")
+
+def banner(txt: str):
+    print(f"{CYAN}✨ {txt}{RESET}")
+
+def parse_numbers(line: str) -> List[int]:
+    nums = re.split(r'[,\s]+', line.strip())
+    try:    return [int(n) for n in nums if n]
+    except ValueError:  return []
+
+# ──────────── COSTOS Y OPERACIONES ──────────── #
+def cost_mtf(pos: int) -> int:
+    return 2 * (pos + 1) - 1
+
+def process_request(cfg: List[int], req: int, algo: str,
+                    upcoming: List[int] = None) -> Tuple[int, str]:
+    if req not in cfg:
+        return 0, f"⚠️  {req} no está en la lista, solicitud omitida."
+    pos = cfg.index(req)
+
+    if algo == "MTF":
+        cost = cost_mtf(pos)
+        cfg.pop(pos); cfg.insert(0, req)
+        line = f"🔎 {req:<2}| Pos {pos:<2}| Costo {cost:<2}| Mover: sí "
+    else:                       
+        lookahead = upcoming[:pos] if upcoming else []
+        mover = req in lookahead
+        if mover:
+            cost = cost_mtf(pos)
+            cfg.pop(pos); cfg.insert(0, req)
+        else:
+            cost = pos + 1
+        movetxt = "sí" if mover else "no"
+        line = f"🔎 {req:<2}| Pos {pos:<2}| Costo {cost:<2}| Mover: {movetxt}"
+    return cost, line
+
+# ──────────── CASOS PREDEFINIDOS ──────────── #
+PRESETS: dict[int, Tuple[List[int], List[int]]] = {
+    1: ([0,1,2,3,4],  [0,1,2,3,4]*4),
+    2: ([0,1,2,3,4],  [4,3,2,1,0,1,2,3,4,3,2,1,0,1,2,3,4]),
+    3: ([0,1,2,3,4],  [0]*20),          # mejor caso MTF
+    4: ([0,1,2,3,4],  [4,3,2,1,0]*4),   # peor caso MTF
+    5: ([0,1,2,3,4],  [2]*20),
+    6: ([0,1,2,3,4],  [3]*20),
+}
 
 # ──────────── EJECUCIÓN DEL ALGORITMO ──────────── #
 def run_algorithm(cfg: List[int], seq: List[int], algo: str,
