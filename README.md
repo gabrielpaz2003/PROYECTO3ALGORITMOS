@@ -27,14 +27,8 @@ Se incluyen herramientas de línea de comandos para ejecutar pruebas automática
 
 ```
 .
-├── src/
-│   ├── mtf.py          # Implementación pura de MTF
-│   ├── imtf.py         # Implementación de IMTF (look-ahead)
-│   ├── utils.py        # Funciones auxiliares de medición y colores
-│   └── main.py         # CLI: menú interactivo de pruebas
-├── tests/
-│   ├── test_cases.json # Conjuntos de secuencias predefinidas
-│   └── benchmark.py    # Script de benchmark automatizado
+
+├── main.py             # Toda la logica del programa
 ├── README.md           # (este archivo)
 └── requirements.txt    # Dependencias mínimas
 ```
@@ -61,8 +55,8 @@ pip install -r requirements.txt
 ## 🚀 Uso básico
 
 ```bash
-# Ejecutar el menú interactivo
-python src/main.py
+# Ejecutar programa
+python main.py
 ```
 
 El programa solicita:
@@ -137,10 +131,3 @@ Todos los cálculos y salidas constan en `Reporte.pdf`.
 
 Este proyecto se distribuye bajo la licencia MIT — ver `LICENSE` para más detalles.
 
----
-
-## 🙌 Créditos
-
-- Mohanty, R. K., & Tripathy, N. (2010). “A New List Update Strategy for Self-Organizing Sequential Search”.  
-- Colorama ©2015 Jonathan Hartley — BSD-3-Clause.  
-- Inspirado en ejemplos de “Competitive Analysis of List Update Algorithms” (Sleator & Tarjan, 1985).
